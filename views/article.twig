@@ -1,0 +1,28 @@
+{% extends "base.twig" %}
+{% block title %}Global News{% endblock %}
+{% block content %}
+    {% include 'navbar.twig' %}
+ <!--News Cards-->
+<div class="container">
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            {% for article in articles|slice(0,12) %}
+                <div class="col d-flex align-items-stretch padding-y-sm ">
+                    <div class="card m-3 p-1 mb-5 bg-body rounded">
+                        {% if  not article.imageUrl %}
+                            <img src="img/No-Image.png" class="card-img-top" alt="no image">
+                        {% else %}
+                            <img src="{{ article.imageUrl }}" class="card-img-top" alt="article image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">{{ article.title }}</h4>
+                            <p class="card-text">{{ article.description | raw }}</p>
+                            <a href="{{ article.url }}" target="_blank" class="btn btn btn btn-light">Read article</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
