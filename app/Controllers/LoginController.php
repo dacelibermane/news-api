@@ -29,6 +29,6 @@ class LoginController
             return new Template('login.twig', ['error' => 'Invalid password!']);
         }
 
-        return new Template('login.twig', ['success' => 'Welcome ','user' => $_SESSION['user']]);
+        return new Template('userAccount.twig', ['success' => 'Welcome ','user' => $_SESSION['user']]);
     }
 }

@@ -1,3 +1,6 @@
+{% extends "base.twig" %}
+{% block title %}Login{% endblock %}
+{% block content %}
 <nav class="navbar nav-bg navbar-expand-lg mb-5 p-4">
     <div class="container-fluid ">
         <a class="navbar-brand" href="/"><h1 class="nav-name">Global News</h1></a>
@@ -37,9 +40,19 @@
                 <button class="btn btn-outline-light" type="submit">Login</button>
             </form>
             <!--Register-->
-            <form class="d-flex ml-3" action="/register{" method="get">
-                <button class="btn btn-outline-light" type="submit">Register</button>
+            <form class="d-flex ml-3" action="/logout" method="get">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
             </form>
         </div>
     </div>
 </nav>
+    {% if success %}
+    <div class="container">
+        <div class="row justify-content-md-center mt-4">
+            <div class="alert alert-success" role="alert"><h3>
+                    Welcome, {{ user|capitalize }}!
+                </h3></div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
