@@ -18,21 +18,21 @@ class LoginController
     {
         $queryBuilder = (Database::getConnection())->createQueryBuilder();
         $user = $queryBuilder
-            ->select('id, email, password')
+            ->select('id, name, email, password')
             ->from('users')
             ->where('email = ?')
             ->setParameter(0, $_POST['email'])->fetchAssociative();
 
 //        var_dump($user);die;
-
-//        if ($_POST['email'] !== $user['email']) {
-//            $_SESSION['errors']['email'] = "Wrong email";
-//        }
-//
-        $validPassword = password_verify($_POST['password'], $user['password']) ;
-        if (!$validPassword) {
-            $_SESSION['errors']['password_match'] = "Invalid password";
+            $_SESSION['auth_id']['name'] = $user['name'];
+        if ($_POST['email'] !== $user['email']) {
+            $_SESSION['errors']['email'] = "Wrong email";
         }
+//
+//        $validPassword = password_verify($_POST['password'], $user['password']) ;
+//        if (!$validPassword) {
+//            $_SESSION['errors']['password_match'] = "Invalid password";
+//        }
 
         if (count($_SESSION['errors']) > 0) {
             return new Redirect('/login');
