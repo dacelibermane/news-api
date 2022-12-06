@@ -27,7 +27,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('GET', '/login', [LoginController::class, 'showForm']);
     $route->addRoute('POST', '/login', [LoginController::class, 'login']);
     $route->addRoute('GET', '/account', [UserAccountController::class, 'showAccount']);
-//    $route->addRoute('POST', '/account', [UserAccountController::class, 'modify']);
+    $route->addRoute('POST', '/account', [UserAccountController::class, 'changeEmail']);
+    $route->addRoute('POST', '/account', [UserAccountController::class, 'changePassword']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
 });
 
