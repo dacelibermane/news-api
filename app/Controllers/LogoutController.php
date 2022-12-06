@@ -5,7 +5,7 @@ namespace App\Controllers;
 class LogoutController
 {
    public function logout(){
-       session_destroy();
+       unset($_SESSION['auth_id']);
        header("Location: /");
    }
 }

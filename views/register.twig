@@ -3,23 +3,7 @@
 {% block content %}
 
     {% include 'navbar.twig' %}
-    {% if  error %}
-        <div class="container">
-            <div class="row justify-content-md-center ">
-                <div class="alert alert-danger" role="alert"><h3>
-                        {{ error }}
-                    </h3></div>
-            </div>
-        </div>
-    {% elseif success %}
-        <div class="container">
-            <div class="row justify-content-md-center mt-4">
-                <div class="alert alert-success" role="alert"><h3>
-                        {{ user|capitalize }}, you are now registered! Please log in!
-                    </h3></div>
-            </div>
-        </div>
-    {% endif %}
+
     <!--Registration form-->
     <div class="container-fluid mb-4" style="width:90rem">
         <div class="row justify-content-md-center">
@@ -43,24 +27,29 @@
                         <!--User password-->
                         <div class="form-group">
                             <label for="password">Password:<sup>*</sup></label>
-                            <input type="password" name="password" class="form-control form-control-lg mb-3"
+                            <input type="password" name="password" class="form-control form-control-lg mb-3  {{ errors.password ? 'is-invalid'}}"
                                    placeholder="Jim123!"
                                    required>
+                           {% if errors.password %}
+                            <div class="invalid-feedback">
+                              {{ errors.password }}
+                            </div>
+                            {% endif %}
                         </div>
                         <!--User password confirmation-->
                         <div class="form-group">
                             <label for="confirm_password">Confirm Password:<sup>*</sup></label>
-                            <input type="password" name="confirm_password" class="form-control form-control-lg mb-4"
+                            <input type="password" name="confirm_password" class="form-control form-control-lg mb-4 {{ errors.password ? 'is-invalid'}}"
                                    placeholder="Jim123!"
                                    required>
                         </div>
                         <div class="row">
-{#                            <div class="col">#}
+                            <div class="col">
                                 <button type="submit" class="btn btn-secondary btn-lg btn-block ">Register</button>
-{#                            </div>#}
-{#                            <div class="col">#}
-{#                                <a href="/login" class="btn btn-light btn-block">Have an account?Login</a>#}
-{#                            </div>#}
+                            </div>
+                            <div class="col">
+                                <a href="/login" class="btn btn-light btn-block">Have an account?Login</a>
+                            </div>
                         </div>
                     </form>
                 </div>

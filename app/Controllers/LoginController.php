@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 
 namespace App\Controllers;
-use App\Services\RegisterService;
+
+use App\Database;
+use App\Redirect;
 use App\Template;
 
 class LoginController
@@ -12,23 +14,29 @@ class LoginController
         return new Template('login.twig');
     }
 
-    public function validateUser(): Template
+    public function login(): Redirect
     {
-        $userEmail = (new RegisterService())->isUserRegistered($_POST['email']);
-        $userId = (new RegisterService())->userId($_POST['email']);
-        $userName = (new RegisterService())->userName($userId);
-        $userPassword = (new RegisterService())->userPassword($userId);
+        $queryBuilder = (Database::getConnection())->createQueryBuilder();
+        $user = $queryBuilder
+            ->select('id, email, password')
+            ->from('users')
+            ->where('email = ?')
+            ->setParameter(0, $_POST['email'])->fetchAssociative();
 
-        $_SESSION['user'] = $userName;
-//        var_dump($userId);
+//        var_dump($user);die;
 
-        if(empty($userEmail)){
-            return new Template('login.twig', ['error' => 'You are not a registered user. Please register!']);
+//        if ($_POST['email'] !== $user['email']) {
+//            $_SESSION['errors']['email'] = "Wrong email";
+//        }
+//
+        $validPassword = password_verify($_POST['password'], $user['password']) ;
+        if (!$validPassword) {
+            $_SESSION['errors']['password_match'] = "Invalid password";
         }
-        if(!password_verify($_POST['password'], $userPassword)){
-            return new Template('login.twig', ['error' => 'Invalid password!']);
-        }
 
-        return new Template('userAccount.twig', ['success' => 'Welcome ','user' => $_SESSION['user']]);
+        if (count($_SESSION['errors']) > 0) {
+            return new Redirect('/login');
+        }
+        return new Redirect('/account');
     }
 }

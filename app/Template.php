@@ -2,24 +2,24 @@
 
 namespace App;
 
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
 class Template
 {
     private string $path;
-    private array $data;
+    private array $parameters;
 
-    public function __construct(string $path, array $data = [])
+    public function __construct(string $path, array $parameters = [])
     {
         $this->path = $path;
-        $this->data = $data;
+        $this->parameters = $parameters;
     }
 
-    public function render(): string
+    public function getPath(): string
     {
-        $loader = new FilesystemLoader("../views");
-        $twig = new Environment($loader);
-        return $twig->render($this->path, $this->data);
+        return $this->path;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 }

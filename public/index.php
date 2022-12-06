@@ -1,24 +1,48 @@
 <?php declare(strict_types=1);
 
+session_start();
+
+require_once "../vendor/autoload.php";
+
 use App\Controllers\ArticleController;
 use App\Controllers\RegisterController;
 use App\Controllers\LoginController;
+use App\Controllers\UserAccountController;
 use App\Controllers\LogoutController;
+use App\Redirect;
 use App\Template;
+use App\ViewVariables\AuthViewVariables;
+use App\ViewVariables\ErrorsViewVariables;
+use Dotenv\Dotenv;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
-require_once "../vendor/autoload.php";
-session_start();
 
-(Dotenv\Dotenv::createImmutable('../'))->load();
+(Dotenv::createImmutable('../'))->load();
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $route) {
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $route) {
     $route->addRoute('GET', '/', [ArticleController::class, 'index']);
     $route->addRoute('GET', '/register', [RegisterController::class, 'showForm']);
     $route->addRoute('POST', '/register', [RegisterController::class, 'register']);
     $route->addRoute('GET', '/login', [LoginController::class, 'showForm']);
-    $route->addRoute('POST', '/login', [LoginController::class, 'validateUser']);
+    $route->addRoute('POST', '/login', [LoginController::class, 'login']);
+    $route->addRoute('GET', '/account', [UserAccountController::class, 'showAccount']);
+//    $route->addRoute('POST', '/account', [UserAccountController::class, 'modify']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
 });
+
+$loader = new FilesystemLoader('../views');
+$twig = new Environment($loader);
+
+$authVariables = [
+    AuthViewVariables::class,
+    ErrorsViewVariables::class
+];
+
+foreach ($authVariables as $variable) {
+    $variable = new $variable;
+    $twig->addGlobal($variable->getName(), $variable->getValue());
+}
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
@@ -44,6 +68,12 @@ switch ($routeInfo[0]) {
         $response = (new $controller)->{$method}();
 
         if ($response instanceof Template) {
-            echo $response->render();
+            echo $twig->render($response->getPath(), $response->getParameters());
+            unset($_SESSION['errors']);
         }
+
+        if ($response instanceof Redirect) {
+            header('Location: ' . $response->getUrl());
+        }
+        break;
 }

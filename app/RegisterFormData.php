@@ -1,19 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace App\Services;
+namespace App;
 
-
-class RegisterServiceRequest
+class RegisterFormData
 {
     private string $name;
     private string $email;
     private string $password;
+    private string $passwordConfirmed;
 
-    public function __construct(string $name, string $email, string $password)
+    public function __construct(string $name, string $email, string $password, string $passwordConfirmed)
     {
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
+        $this->passwordConfirmed = $passwordConfirmed;
     }
 
     public function getName(): string
@@ -29,5 +30,10 @@ class RegisterServiceRequest
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getPasswordConfirmed(): string
+    {
+        return $this->passwordConfirmed;
     }
 }

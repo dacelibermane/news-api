@@ -5,34 +5,35 @@ namespace App\Controllers;
 use App\Services\RegisterService;
 use App\Services\RegisterServiceRequest;
 use App\Template;
+use App\Redirect;
+use App\Validation;
 
 class RegisterController
 {
-
     public function showForm(): Template
     {
         return new Template('register.twig');
     }
 
-    public function register():Template
+    public function register():Redirect
     {
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        if ($_POST['password'] !== $_POST['confirm_password']){
+            $_SESSION['errors']['password'] = 'Passwords do not match!';
+        }
+        if(strlen($_POST['password']) < 7){
+            $_SESSION['errors']['password'] = "Password must be at least 7 characters long";
+        }
+        if(count($_SESSION['errors']) > 0){
+            return new Redirect('/register');
+        }
         $registerService = new RegisterService();
-        $userEmail = $registerService->isUserRegistered($_POST['email']);
-
-        if ($_POST['password'] !== $_POST['confirm_password']) {
-            return new Template('register.twig', ['error' => 'Passwords do not match!']);
-        }
-        if ($userEmail != null) {
-            return new Template('register.twig', ['error' => ' You are already registered. Please login!']);
-        }
             $registerService->execute(
                 new RegisterServiceRequest(
                     $_POST['name'],
                     $_POST['email'],
-                    $hashedPassword
+                    $_POST['password']
                 )
             );
-        return new Template('register.twig', ['success' => 'you are now registered! Please log in!']);
+        return new Redirect('/register');
     }
 }
