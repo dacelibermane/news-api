@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Database;
 use App\Redirect;
 use App\Template;
+use App\Validation;
 
 class LoginController
 {
@@ -15,32 +15,13 @@ class LoginController
 
     public function login(): Redirect
     {
-        $queryBuilder = (Database::getConnection())->createQueryBuilder();
-        $user = $queryBuilder
-            ->select('*')
-            ->from('users')
-            ->where('email = ?')
-            ->setParameter(0, $_POST['email'])
-            ->fetchAssociative();
-
-
-        if ($_POST['email'] !== $user['email']) {
-            $_SESSION['errors']['email'] = "Wrong email";
-        }
-
-        $validPassword = password_verify($_POST['password'], $user['password']) ;
-        if ($_POST['email'] === $user['email'] && !$validPassword) {
-            $_SESSION['errors']['password_match'] = "Invalid password";
-        }
-
-        if (count($_SESSION['errors']) > 0) {
+        $validation = new Validation();
+        $validation->validateLogin($_POST);
+        if(count($_SESSION['errors']) > 0){
             return new Redirect('/login');
         }
+        $validation->getUserId($_POST);
 
-        if($validPassword) {
-            $_SESSION['auth_id'] = $user['id'];
-        }
         return new Redirect('/account');
-
     }
 }

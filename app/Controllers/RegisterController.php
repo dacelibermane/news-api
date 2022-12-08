@@ -17,23 +17,21 @@ class RegisterController
 
     public function register():Redirect
     {
-        if ($_POST['password'] !== $_POST['confirm_password']){
-            $_SESSION['errors']['password'] = 'Passwords do not match!';
-        }
-        if(strlen($_POST['password']) < 7){
-            $_SESSION['errors']['password'] = "Password must be at least 7 characters long";
-        }
+        $validation = new Validation();
+        $validation->validateRegistration($_POST);
+
         if(count($_SESSION['errors']) > 0){
             return new Redirect('/register');
         }
+
         $registerService = new RegisterService();
-            $registerService->execute(
-                new RegisterServiceRequest(
-                    $_POST['name'],
-                    $_POST['email'],
-                    $_POST['password']
-                )
-            );
-        return new Redirect('/register');
+        $registerService->execute(
+            new RegisterServiceRequest(
+                $_POST['name'],
+                $_POST['email'],
+                $_POST['password']
+            )
+        );
+        return new Redirect('/login');
     }
 }

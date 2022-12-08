@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Database;
 use App\Redirect;
+use App\Services\UpdateProfileService;
 use App\Template;
 
 class UserAccountController
@@ -32,8 +33,12 @@ class UserAccountController
         }
 
         if (count($_SESSION['errors']) > 0) {
-            return new Redirect('/login');
+            return new Redirect('/account');
         }
+
+        $newPassword = password_hash($_POST['password_new'], PASSWORD_DEFAULT);
+        $id = $_SESSION['auth_id'];
+         (new UpdateProfileService())->execute($newPassword,$id);
         return new Redirect('/account');
     }
 }
