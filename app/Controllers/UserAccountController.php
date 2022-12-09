@@ -6,12 +6,25 @@ use App\Database;
 use App\Redirect;
 use App\Services\UpdateProfileService;
 use App\Template;
+use App\Validation;
 
 class UserAccountController
 {
     public function showAccount():Template
     {
         return new Template('account.twig');
+    }
+
+    public function changeName():Redirect{
+        $validation = new Validation();
+        $validation->validateName($_POST);
+
+        if (count($_SESSION['errors']) > 0) {
+            return new Redirect('/account');
+        }
+
+        (new UpdateProfileService())->execute('name', $_POST['name'], $_SESSION['auth_id']);
+        return new Redirect('/account');
     }
 
     public function changeEmail():Redirect
@@ -38,7 +51,7 @@ class UserAccountController
 
         $newPassword = password_hash($_POST['password_new'], PASSWORD_DEFAULT);
         $id = $_SESSION['auth_id'];
-         (new UpdateProfileService())->execute($newPassword,$id);
+         (new UpdateProfileService())->execute('password',$newPassword,$id);
         return new Redirect('/account');
     }
 }

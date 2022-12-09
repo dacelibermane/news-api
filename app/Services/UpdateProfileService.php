@@ -6,14 +6,9 @@ use App\Database;
 
 class UpdateProfileService
 {
-    public function execute( string $newValue, string $id): void
+    public function execute(string $type, string $newValue, string $id): void
     {
-        $queryBuilder = Database::getConnection()->createQueryBuilder();
-        $queryBuilder
-            ->update('users')
-            ->set('email', $newValue)
-            ->where('id = ?')
-            ->setParameter(0, $id)
-            ->executeQuery();
+        $connection = Database::getConnection();
+        $connection->executeQuery("UPDATE users SET $type = '$newValue' WHERE id = '$id'");
     }
 }
