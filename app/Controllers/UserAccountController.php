@@ -15,7 +15,7 @@ class UserAccountController
         return new Template('account.twig');
     }
 
-    public function changeName():Redirect{
+    public function changeEmail():Redirect{
         $validation = new Validation();
         $validation->validateName($_POST);
 
@@ -23,11 +23,11 @@ class UserAccountController
             return new Redirect('/account');
         }
 
-        (new UpdateProfileService())->execute('name', $_POST['name'], $_SESSION['auth_id']);
+        (new UpdateProfileService())->execute('email', $_POST['email'], $_SESSION['auth_id']);
         return new Redirect('/account');
     }
 
-    public function changeEmail():Redirect
+    public function changePassword():Redirect
     {
         $queryBuilder = (Database::getConnection())->createQueryBuilder();
         $user = $queryBuilder
