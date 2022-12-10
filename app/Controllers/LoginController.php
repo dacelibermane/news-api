@@ -22,6 +22,6 @@ class LoginController
         }
         $validation->getUserId($_POST);
 
-        return new Redirect('/account');
+        return new Redirect('/profile');
     }
 }

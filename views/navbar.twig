@@ -36,10 +36,16 @@
             <form class="d-flex m-3" action="/login" method="get">
                 <button class="btn btn-outline-light" type="submit">Login</button>
             </form>
+            {% if auth.name %}
+            <form class="d-flex ml-3" action="/logout" method="get">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
+            </form>
+            {% else %}
             <!--Register-->
             <form class="d-flex ml-3" action="/register" method="get">
                 <button class="btn btn-outline-light" type="submit">Register</button>
             </form>
+            {% endif %}
         </div>
     </div>
 </nav>

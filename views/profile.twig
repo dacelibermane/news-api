@@ -1,0 +1,81 @@
+{% extends "base.twig" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+    {% include "navbar.twig" %}
+     <h1>Welcome, {{ auth.name|capitalize }}!</h1>
+
+    <div class="container-fluid mb-4" style="width:90rem">
+    <!-- form card change email -->
+    <div class="col-md-6 offset-md-3 mb-4">
+        <div class="card card-outline-secondary mb-4" style="width: 40rem">
+            <div class="card-header">
+                <h3 class="mb-0">Change Email</h3>
+            </div>
+            <div class="card-body">
+                <form action="/updateCredentials" method="post" class="form">
+                    <div class="form-group">
+                        <label for="email">Enter new email</label>
+                        <input type="email" id="email" name="email" class="form-control mb-2 {{ errors.email ? 'is-invalid'}} {{ success.email ? 'is-valid'}}">
+                        {% if errors.email %}
+                            <div class="invalid-feedback">
+                                {{ errors.email }}
+                            </div>
+                        {% elseif success.email %}
+                            <div class="valid-feedback">
+                                {{ success.email }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn btn-secondary btn-lg float-right">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col">
+            <!-- form card change password-->
+            <div class="card card-outline-secondary" style="width: 40rem">
+                <div class="card-header">
+                    <h3 class="mb-0">Change Password</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/updatePassword" method="post" class="form">
+                        <div class="form-group">
+                            <label for="old_password">Current Password</label>
+                            <input type="password" name="old_password" class="form-control mb-2" id="old_password" {{ errors.old_password ? 'is-invalid'}}{{ success.password ? 'is-valid'}}>
+                            {% if errors.old_password %}
+                                <div class="invalid-feedback">
+                                    {{ errors.old_password}}
+                                </div>
+                            {% elseif success.password %}
+                                <div class="valid-feedback">
+                                    {{ success.password }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="password_new">New Password</label>
+                            <input type="password" name="password_new" class="form-control mb-2" id="password_new" {{ errors.password_new ? 'is-invalid'}}>
+                            {% if errors.password_new %}
+                                <div class="invalid-feedback">
+                                    {{ errors.password_new}}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="password_confirm">Confirm New Password</label>
+                            <input type="password" name="password_confirm" class="form-control mb-2" id="password-confirm"{{ errors.password_confirm ? 'is-invalid'}}>
+                            {% if errors.password_confirm %}
+                                <div class="invalid-feedback">
+                                    {{ errors.password_confirm}}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn btn-secondary btn-lg float-right">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

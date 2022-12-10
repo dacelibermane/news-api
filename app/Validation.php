@@ -8,9 +8,8 @@ class Validation
     public function validateRegistration(array $post): void
     {
         $this->validateName($post);
-        $this->validateRegisterEmail($post);
-        $this->validatePasswordMatch($post);
-
+        $this->validateEmail($post);
+        $this->validatePassword($post);
     }
 
     public function validateName(array $post): void
@@ -23,7 +22,7 @@ class Validation
         }
     }
 
-    public function validateRegisterEmail(array $post): void
+    public function validateEmail(array $post): void
     {
         $queryBuilder = Database::getConnection()->createQueryBuilder();
         $user = $queryBuilder
@@ -41,10 +40,13 @@ class Validation
         }
     }
 
-    public function validatePasswordMatch(array $post): void
+    public function validatePassword(array $post): void
     {
         if ($post['password'] !== $post['confirm_password']) {
             $_SESSION['errors']['password'] = 'Passwords do not match';
+        }
+        if (empty($post['password'])) {
+            $_SESSION['errors']['password'] = 'Password is required';
         }
     }
 
@@ -58,14 +60,13 @@ class Validation
             ->setParameter(0, $post['email'])
             ->fetchAssociative();
 
-        if (!$user) {
-            if ($_POST['email'] !== $user['email']) {
+
+            if (!$user) {
                 $_SESSION['errors']['email'] = "Wrong email";
             }
-            if (!password_verify($_POST['password'], $user['password'])) {
+            if ($user &&!password_verify($_POST['password'], $user['password'])) {
                 $_SESSION['errors']['password'] = "Wrong password";
             }
-        }
 
     }
     public function getUserId(array $post):void
@@ -80,4 +81,5 @@ class Validation
 
         $_SESSION['auth_id'] = $user['id'];
     }
+
 }

@@ -9,6 +9,6 @@ class UpdateProfileService
     public function execute(string $type, string $newValue, string $id): void
     {
         $connection = Database::getConnection();
-        $connection->executeQuery("UPDATE users SET $type = '$newValue' WHERE id = '$id'");
+        $connection->executeQuery("UPDATE users SET {$type} = '{$newValue}' WHERE id = '{$id}'");
     }
 }

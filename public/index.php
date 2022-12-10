@@ -5,14 +5,15 @@ session_start();
 require_once "../vendor/autoload.php";
 
 use App\Controllers\ArticleController;
+use App\Controllers\ProfileController;
 use App\Controllers\RegisterController;
 use App\Controllers\LoginController;
-use App\Controllers\UserAccountController;
 use App\Controllers\LogoutController;
 use App\Redirect;
 use App\Template;
 use App\ViewVariables\AuthViewVariables;
 use App\ViewVariables\ErrorsViewVariables;
+use App\ViewVariables\SuccessViewVariables;
 use Dotenv\Dotenv;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -26,9 +27,9 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('POST', '/register', [RegisterController::class, 'register']);
     $route->addRoute('GET', '/login', [LoginController::class, 'showForm']);
     $route->addRoute('POST', '/login', [LoginController::class, 'login']);
-    $route->addRoute('GET', '/account', [UserAccountController::class, 'showAccount']);
-    $route->addRoute('POST', '/change-email', [UserAccountController::class, 'changeEmail']);
-//    $route->addRoute('POST', '/account', [UserAccountController::class, 'changePassword']);
+    $route->addRoute('GET', '/profile', [ProfileController::class, 'showProfile']);
+    $route->addRoute('POST', '/updateCredentials', [ProfileController::class, 'updateCredentials']);
+    $route->addRoute('POST', '/updatePassword', [ProfileController::class, 'updatePassword']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
 });
 
@@ -37,7 +38,8 @@ $twig = new Environment($loader);
 
 $authVariables = [
     AuthViewVariables::class,
-    ErrorsViewVariables::class
+    ErrorsViewVariables::class,
+    SuccessViewVariables::class
 ];
 
 foreach ($authVariables as $variable) {
@@ -71,6 +73,7 @@ switch ($routeInfo[0]) {
         if ($response instanceof Template) {
             echo $twig->render($response->getPath(), $response->getParameters());
             unset($_SESSION['errors']);
+            unset($_SESSION['success']);
         }
 
         if ($response instanceof Redirect) {
